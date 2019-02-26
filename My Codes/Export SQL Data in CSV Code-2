@@ -1,0 +1,19 @@
+#Importing SQL query Result
+import pyodbc
+import pandas as pd
+
+cnxn = pyodbc.connect(driver='{SQL Server}',
+                      host='IP,Port',
+                      database='DB Name',
+                      trusted_connection='yes',
+                      user='User ID',
+                      password='Password')
+
+cursor = cnxn.cursor()
+
+SQL="SELECT * FROM dbo.status where FIRSTOCCURRENCE BETWEEN '2019-02-20' AND '2019-02-21';"
+df = pd.read_sql(SQL,cnxn)
+
+writer=pd.ExcelWriter('abc.xlsx')
+df.to_excel(writer, 'Sheet1', index=False)
+writer.save()
