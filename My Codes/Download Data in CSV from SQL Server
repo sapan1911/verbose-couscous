@@ -1,0 +1,31 @@
+import pyodbc
+import pandas as pd
+
+cnxn = pyodbc.connect(driver='{SQL Server}',
+                      host='IP,port',
+                      database='DB name',
+                      trusted_connection='yes',
+                      user='User Id',
+                      password='Password')
+cursor = cnxn.cursor()
+cursor.execute("SELECT * FROM dbo.status where FIRSTOCCURRENCE BETWEEN '2019-02-20' AND '2019-02-22';")
+cursor.description
+cursor.execute
+
+from collections import namedtuple
+
+def create_record(obj, fields):
+    ''' given obj from db returns named tuple with fields mapped to values '''
+    Record = namedtuple("Record", fields)
+    mappings = dict(zip(fields, obj))
+    return Record(**mappings)
+with cnxn.cursor() as cursor:
+      cursor.execute("SELECT * FROM dbo.status where FIRSTOCCURRENCE BETWEEN '2019-02-20' AND '2019-02-21';")
+      column_names = [desc[0] for desc in cursor.description]
+      rows = cursor.fetchall()
+cursor.close()
+result = []
+for row in rows:
+    result.append(create_record(row, column_names))
+result1=pd.DataFrame(result)
+result1.to_csv('sss.csv')
